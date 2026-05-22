@@ -275,10 +275,12 @@ function GetPackageFiles($PackageRoot) {
 
         Get-ChildItem -LiteralPath $rootPath -Recurse -File | ForEach-Object {
             $relative = $_.FullName.Substring($PackageRoot.Length).TrimStart('\', '/')
-            [void]$files.Add([pscustomobject]@{
-                Source = $_.FullName
-                Relative = $relative
-            })
+            if ($relative -notmatch '^resources[\\/]app[\\/]extensions[\\/]') {
+                [void]$files.Add([pscustomobject]@{
+                    Source = $_.FullName
+                    Relative = $relative
+                })
+            }
         }
     }
 
