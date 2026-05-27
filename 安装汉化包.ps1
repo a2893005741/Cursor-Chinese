@@ -120,7 +120,7 @@ function AssertFileMatchesPackage($PackageRoot, $TargetRoot, $Relative) {
     if ($sourceHash -ne $targetHash) { Fail ("Installed verification failed: target file does not match package file: " + $Relative) }
 }
 
-function AssertProductChecksums($Root) {
+function AssertPackageProductChecksums($Root) {
     $productPath = Join-Path $Root 'resources\app\product.json'
     if (-not (Test-Path -Path $productPath -PathType Leaf)) { Fail 'Missing resources\app\product.json.' }
     $product = Get-Content -Path $productPath -Raw | ConvertFrom-Json
@@ -132,21 +132,25 @@ function AssertProductChecksums($Root) {
         $bytes = [System.IO.File]::ReadAllBytes($filePath)
         $sha256 = [System.Security.Cryptography.SHA256]::Create()
         try { $actual = [System.Convert]::ToBase64String($sha256.ComputeHash($bytes)).TrimEnd('=') } finally { $sha256.Dispose() }
-        if ($actual -ne [string]$prop.Value) { Fail ('product checksum mismatch: ' + $prop.Name) }
+        if ($actual -ne [string]$prop.Value) { Fail ('Package integrity check failed: product.json checksum does not match bundled file: ' + $prop.Name + '. This package is mixed, outdated, or was edited without syncing checksums. Please use the latest complete package.') }
     }
+}
+
+function AssertTargetProductJsonInstalled($PackageRoot, $TargetRoot) {
+    AssertFileMatchesPackage $PackageRoot $TargetRoot 'resources\app\product.json'
 }
 
 function AssertPackageRoot($PackageRoot) {
     $null = GetCoreFiles $PackageRoot
     $vsixPath = Join-Path $PackageRoot 'ms-ceintl.vscode-language-pack-zh-hans-1.121.2026052106-cursor105-fused.vsix'
     if (-not (Test-Path -Path $vsixPath -PathType Leaf)) { Fail 'Package is missing language pack VSIX.' }
-    AssertProductChecksums $PackageRoot
+    AssertPackageProductChecksums $PackageRoot
 }
 
 function AssertInstalledFiles($PackageRoot, $TargetRoot) {
     $files = GetCoreFiles $PackageRoot
     foreach ($file in $files) { AssertFileMatchesPackage $PackageRoot $TargetRoot $file.Relative }
-    AssertProductChecksums $TargetRoot
+    AssertTargetProductJsonInstalled $PackageRoot $TargetRoot
 }
 
 function ShowVsixInstallHint($VsixPath) {
