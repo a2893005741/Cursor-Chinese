@@ -57,8 +57,12 @@ function GetCoreFiles($PackageRoot) {
         'resources\app\out\main.js',
         'resources\app\out\nls.keys.json',
         'resources\app\out\nls.messages.json',
+        'resources\app\out\vs\base\parts\sandbox\electron-sandbox\preload.js',
+        'resources\app\out\vs\workbench\workbench.desktop.main.css',
+        'resources\app\out\vs\workbench\api\node\extensionHostProcess.js',
         'resources\app\out\vs\workbench\workbench.desktop.main.js',
         'resources\app\out\vs\workbench\contrib\composer\browser\preload-webview-browser.js',
+        'resources\app\out\vs\code\electron-sandbox\workbench\workbench.js',
         'locales\en-GB.pak',
         'locales\en-US.pak'
     )
