@@ -1,118 +1,54 @@
-# Cursor 中文化复制安装包
+# Cursor 汉化复制包说明
 
-这是一个用于 Cursor 的简体中文化复制安装包。普通用户只需要使用 `一键复制到Cursor安装目录` 文件夹里的内容即可。
+这个目录是给 Cursor 使用的精简汉化复制包：复制包只覆盖少量核心补丁文件，基础界面中文由 VSIX 语言包负责。
 
-> 适用系统：Windows
->
-> 适用目标：Cursor 桌面版
+## 一键安装
 
-## 这个包能做什么
+1. 先完全关闭 Cursor。
+2. 双击 `一键安装汉化包.cmd`，复制核心汉化文件。
+3. 手动安装本目录下的 `ms-ceintl.vscode-language-pack-zh-hans-1.121.2026052106-cursor105-fused.vsix`，用于基础菜单、命令、设置、扩展翻译。
+4. 等提示完成后，重新打开 Cursor。
 
-- 把 Cursor 界面中的大量英文文案替换为简体中文。
-- 包含 Cursor / VS Code 简体中文语言包融合版本，作为 `.vsix` 文件随包提供，需要你在 Cursor 里手动安装。
-- 包含 Cursor 主界面、Agent、Composer、设置页等界面的中文化补丁。
-- 提供一键安装脚本，安装前会自动备份被覆盖的文件；脚本不会把扩展复制进 Cursor 安装目录。
+## 只检查是否真正生效
 
-## 快速安装
+如果你已经手动覆盖或运行过安装，但界面仍有英文，先双击 `只检查是否已正确汉化.cmd`。
 
-1. 下载本项目。
-2. 打开 `一键复制到Cursor安装目录` 文件夹。
-3. 完全关闭 Cursor。
-4. 双击运行 `一键安装汉化包.cmd`。
-5. 等待脚本提示完成。
-6. 重新打开 Cursor。
-7. 如果还需要安装中文语言包扩展，请在 Cursor 中手动安装 `一键复制到Cursor安装目录\extensions\ms-ceintl.vscode-language-pack-zh-hans-1.121.2026052106-cursor105-fused.vsix`。
+这个检查不会复制或修改任何真实安装文件，只会确认真实 Cursor 目录里的核心补丁文件是否与本复制包一致。基础界面中文由 VSIX 语言包负责。
 
-如果双击脚本无法运行，也可以在 `一键复制到Cursor安装目录` 文件夹中打开 PowerShell，然后执行：
+如果这里检查失败，说明真实目录当前实际加载的关键文件还不是本复制包里的文件；如果这里检查通过但界面仍英文，再继续排查缓存或其他运行态来源。
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\install-localization.ps1
-```
+## 当前复制内容
 
-## 安装包内容
+安装脚本只复制这些核心补丁文件：
 
-```text
-一键复制到Cursor安装目录/
-├─ 一键安装汉化包.cmd
-├─ install-localization.ps1
-├─ 安装汉化包.ps1
-├─ extensions/
-│  └─ ms-ceintl.vscode-language-pack-zh-hans-1.121.2026052106-cursor105-fused.vsix
-├─ locales/
-│  ├─ en-GB.pak
-│  └─ en-US.pak
-└─ resources/
-   └─ app/
-      └─ out/
-         ├─ nls.messages.json
-         └─ vs/
-            └─ workbench/
-               ├─ workbench.desktop.main.js
-               └─ contrib/
-                  └─ composer/
-                     └─ browser/
-                        └─ preload-webview-browser.js
-```
+- `resources/app/product.json`
+- `resources/app/out/main.js`
+- `resources/app/out/nls.keys.json`
+- `resources/app/out/nls.messages.json`
+- `resources/app/out/vs/workbench/workbench.desktop.main.js`
+- `resources/app/out/vs/workbench/contrib/composer/browser/preload-webview-browser.js`
+- `locales/en-GB.pak`
+- `locales/en-US.pak`
 
-## 文件说明
+基础界面中文由这个 VSIX 负责：
 
-| 文件或目录 | 作用 |
-| --- | --- |
-| `一键安装汉化包.cmd` | 给普通用户使用的双击安装入口。 |
-| `install-localization.ps1` | PowerShell 安装入口，会自动调用正式安装脚本。 |
-| `安装汉化包.ps1` | 正式安装脚本，负责查找 Cursor、备份旧文件、复制主程序汉化文件；不会复制扩展目录。 |
-| `resources/app/out/nls.messages.json` | Cursor / VS Code 标准界面文案的中文化文件。 |
-| `resources/app/out/vs/workbench/workbench.desktop.main.js` | Cursor 主界面、按钮、菜单、Agent 等硬编码文案补丁。 |
-| `resources/app/out/vs/workbench/contrib/composer/browser/preload-webview-browser.js` | Composer / Webview 相关界面的中文化补丁。 |
-| `locales/` | Electron / Chromium 相关本地化资源。 |
-| `extensions/ms-ceintl.vscode-language-pack-zh-hans-1.121.2026052106-cursor105-fused.vsix` | 融合后的简体中文语言包扩展安装包，由你在 Cursor 中手动安装。 |
-| `install-backups/` | 安装时自动生成的备份目录。首次下载时可能不存在。 |
+- `ms-ceintl.vscode-language-pack-zh-hans-1.121.2026052106-cursor105-fused.vsix`
 
-## 安全说明
+## 重要说明
 
-- 安装前请先完全关闭 Cursor。
-- 安装脚本会先备份将要覆盖的文件，再复制主程序汉化文件。
-- 安装脚本不会复制 `resources/app/extensions` 扩展目录；语言包 `.vsix` 请手动安装。
-- 备份会保存在 `一键复制到Cursor安装目录/install-backups/时间戳/` 下。
-- 本项目不会在你下载后自动修改 Cursor，只有你主动运行安装脚本时才会执行安装。
-- 如果不确定安装位置，可以先执行试运行命令：
+- 当前交付以“核心复制包 + VSIX 语言包”为准。
+- 一键安装脚本只复制核心补丁文件，不再递归复制已展开语言包目录。
+- 基础菜单、命令、设置、扩展翻译由根目录 VSIX 负责：`ms-ceintl.vscode-language-pack-zh-hans-1.121.2026052106-cursor105-fused.vsix`。
+- 菜单类英文优先检查融合中文语言包源码：`H:\clourer\__zh_pack_fused\extension\translations\main.i18n.json`。
+- 用户扩展贡献的菜单英文优先检查融合语言包的扩展翻译文件，例如 GitHub Pull Requests：`H:\clourer\__zh_pack_fused\extension\translations\extensions\github.vscode-pull-request-github.i18n.json`。
+- 如果语言包缺少对应模块/key，先补语言包源码并重新打包 VSIX；只有确认不是语言包可接管的文案，才改 `workbench.desktop.main.js`。
+- 复制包根目录保留一个标准 VSIX，供 Cursor “从 VSIX 安装”时选择。
+- 安装脚本会校验目标核心文件与复制包文件一致，避免使用旧版本内部标记误判安装失败。
+- 复制包包含同步后的 `resources/app/product.json`，用于匹配已汉化的 `workbench.desktop.main.js` 完整性校验，避免 Cursor 报安装损坏。
+- Automations 页面属于主程序硬编码前端文案，当前已通过 `workbench.desktop.main.js` 窄范围补丁汉化首页、统计卡片、运行历史、表格表头、空状态和新建按钮。
+- 如果需要安装或重装基础语言包，请选择本目录下的 `ms-ceintl.vscode-language-pack-zh-hans-1.121.2026052106-cursor105-fused.vsix`。
+- VSIX 已按标准 ZIP 路径格式打包，包内路径使用 `/`，避免 Cursor 选择文件安装时识别不到。
 
-```powershell
-powershell -NoProfile -ExecutionPolicy Bypass -File .\install-localization.ps1 -WhatIf
-```
+## 如果安装后仍有英文
 
-## 常见问题
-
-### 运行脚本后提示 Cursor 正在运行怎么办？
-
-请完全退出 Cursor 后再运行安装脚本。只关闭窗口可能不够，建议在任务栏托盘或任务管理器中确认 Cursor 已退出。
-
-### 安装后没有变成中文怎么办？
-
-请重启 Cursor。如果仍未生效，通常是 Cursor 版本结构发生变化，需要重新适配对应版本的复制安装包。
-
-### 可以直接手动复制文件吗？
-
-可以，但不推荐。推荐使用 `一键安装汉化包.cmd`，因为脚本会自动备份旧文件，手动复制更容易漏文件。
-
-## 近期维护记录
-
-- 已确认安装脚本不复制 `resources/app/extensions` 扩展目录，复制包压缩文件也不再包含扩展目录；语言包扩展改为由用户手动安装 `.vsix`。
-- 已按当前复制包资源重新补齐文件菜单截图中的残留英文，包括 `新建文本文件`、`新建窗口`、`打开文件...`、`打开文件夹...`、`另存为...`、`全部保存`、`自动保存`、`关闭编辑器` 等可见菜单项。
-- 已刷新 `一键复制到Cursor安装目录 (2).zip`，压缩包内容与当前复制包目录保持一致。
-- 已补齐文件菜单截图中的残留英文，包括 `Switch to Agents Window`、`Close Window`、`Exit` 等可见菜单项。
-- 已补齐侧边栏和分组菜单截图中的残留英文，包括 `Marketplace`、`Repositories`、`Show`、`Collapse All`、`More`、`Automations`。
-- 保留 `Slack`、`Linear`、`Git`、`SDK`、`API` 等产品名或技术名，避免误伤程序值。
-- 所有补丁均只写入 `一键复制到Cursor安装目录` 复制包目录。
-
-## 版本信息
-
-- 语言包版本：`1.121.2026052106`
-- 融合包文件：`H:\clourer\一键复制到Cursor安装目录\extensions\ms-ceintl.vscode-language-pack-zh-hans-1.121.2026052106-cursor105-fused.vsix`
-- 主要面向 Cursor `1.105.x` 相关资源结构
-
-Cursor 更新后，旧补丁可能失效。如果升级 Cursor 后出现界面异常或部分英文恢复，需要重新制作对应版本的复制安装包。
-
-## 声明
-
-本项目是面向 Cursor 的中文化复制安装包整理。Cursor 及相关资源版权归原权利方所有，VS Code 官方中文语言包部分遵循其原始许可。请仅在你自己可控的环境中使用。
+把英文界面截图发回来，继续只改这个复制包，不直接改真实 Cursor 安装目录。
