@@ -2337,7 +2337,7 @@
 		"rust-lang.rust-analyzer",
 		"Shopify.ruby-lsp"
 	],
-	"version": "3.5.33",
+	"version": "3.6.21",
 	"removeTelemetryMachineId": true,
 	"enabledTelemetryLevels": {
 		"error": true,
@@ -2390,16 +2390,16 @@
 		"__GULPFILE_REMOVE_LINE_BEFORE_COMPILING____disable_user_intent_agents__",
 		"__GULPFILE_REMOVE_LINE_BEFORE_COMPILING____disable_local_mode__"
 	],
-	"commit": "aac81804b986d739acab348ed96b8bea6e83cc50",
-	"realCommit": "aac81804b986d739acab348ed96b8bea6e83cc57",
-	"date": "2026-05-22T06:47:48.039Z",
+	"commit": "e7a7e93f4d75f8272503ecf33cedbaae10114a10",
+	"realCommit": "e7a7e93f4d75f8272503ecf33cedbaae10114a15",
+	"date": "2026-05-28T21:45:36.072Z",
 	"checksums": {
-		"vs/base/parts/sandbox/electron-sandbox/preload.js": "zPCUIkLdzGmxIDhWV6ZDMZqHtdxqDJGyZL7I4QV/hHs",
-		"vs/workbench/workbench.desktop.main.js": "K3Q/9K2PLgasCfPVmOTtZfZ7iyQmA31226coBeL334w",
-		"vs/workbench/workbench.desktop.main.css": "C+D1f9TZKFq4ZXegG8dMdMiYZ/zizzlC2O6deZ2R5KA",
-		"vs/workbench/api/node/extensionHostProcess.js": "fSbIwi6p634NhXUlnvCK2MrEB4mLmBEJqFI4MVcKDzQ",
-		"vs/code/electron-sandbox/workbench/workbench.html": "E6RG2gbwOjtPjaYkC1efQqCWiKpnCZMWMfP5HSPG4/A",
-		"vs/code/electron-sandbox/workbench/workbench.js": "+suRIcpAAhh/JXwDWUkSfnOKo2YNG1Y8zMmigNsJFVE"
+		"vs/base/parts/sandbox/electron-sandbox/preload.js": "EpLUvbBCdWP0lXuFoDAfomYd6KZPq7ntPkZS2ngJvuc",
+		"vs/workbench/workbench.desktop.main.js": "bNbiYOXIwnqB+XJag0TfWTmZolabxZoF9OXbBZIHsdA",
+		"vs/workbench/workbench.desktop.main.css": "RiLyxYa18qTuWT2UAyYfi/j8BXn06h9ukkND0MDbr8Y",
+		"vs/workbench/api/node/extensionHostProcess.js": "BEznlhKAwrHDnnDXj6/Qfs5zK7bow5jd6jYUJJ3vA/s",
+		"vs/code/electron-sandbox/workbench/workbench.html": "g2I3CZ/xPc/Mp8LOXiN6rdC20u8PNfzsAesoQeNeswg",
+		"vs/code/electron-sandbox/workbench/workbench.js": "uBJrY6Ga8/c5y7rcEoinM2D+WMuLiz1sujE/vSDzIDY"
 	},
 	"target": "user"
 }

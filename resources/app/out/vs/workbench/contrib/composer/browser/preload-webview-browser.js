@@ -25,7 +25,7 @@
 						return originalQuery(descriptor);
 					};
 				})();
-			`)}catch(e){console.error("[WebviewBrowser Preload] 本地网络访问 polyfill 注入失败:",e)}}function g(){try{a.executeJavaScript(`
+			`)}catch(e){console.error("[WebviewBrowser Preload] Failed to inject local network access polyfill:",e)}}function g(){try{a.executeJavaScript(`
 				(function() {
 					if (typeof navigator === 'undefined' || !navigator.credentials) {
 						return;
@@ -49,24 +49,24 @@
 								window.cursorBrowser.send('passkey-request-stalled');
 							}
 						} catch (error) {
-							console.debug('[WebviewBrowser Preload] 通知 passkey 支持状态失败:', error);
+							console.debug('[WebviewBrowser Preload] Failed to notify passkey support status:', error);
 						}
 					}
 
 					function createNotSupportedError() {
 						return new DOMException(
-							'Cursor 浏览器不支持 WebAuthn。',
+							'WebAuthn is not supported in the Cursor browser.',
 							'NotSupportedError'
 						);
 					}
 
 					function createAbortError() {
-						return new DOMException('操作已中止。', 'AbortError');
+						return new DOMException('The operation was aborted.', 'AbortError');
 					}
 
 					function createTimeoutError() {
 						return new DOMException(
-							'Cursor 浏览器中的 WebAuthn 请求已超时。',
+							'The WebAuthn request timed out in the Cursor browser.',
 							'TimeoutError'
 						);
 					}
@@ -194,7 +194,7 @@
 						}
 					}
 				})();
-			`)}catch(e){console.error("[WebviewBrowser Preload] WebAuthn polyfill 注入失败:",e)}}f(),g();const l=process.platform==="darwin",p={send:(e,...o)=>{["focus-url-bar","element-selected","element-updated","element-picked","element-hovered","area-screenshot-selected","style-changes-confirmed","css-inspector-style-change","open-url-side-group","open-url-new-tab","focus-composer-input","css-inspector-undo","css-inspector-redo","show-dialog","show-dialog-dummy","passkey-request-stalled","browser-error-action"].includes(e)&&s.sendToHost(e,...o)}};try{u.exposeInMainWorld("cursorBrowser",p)}catch(e){console.error("[WebviewBrowser Preload] 桥接暴露失败:",e)}function c(){const e=`
+			`)}catch(e){console.error("[WebviewBrowser Preload] Failed to inject WebAuthn polyfill:",e)}}f(),g();const l=process.platform==="darwin",p={send:(e,...o)=>{["focus-url-bar","element-selected","element-updated","element-picked","element-hovered","area-screenshot-selected","style-changes-confirmed","css-inspector-style-change","open-url-side-group","open-url-new-tab","focus-composer-input","css-inspector-undo","css-inspector-redo","show-dialog","show-dialog-dummy","passkey-request-stalled","browser-error-action"].includes(e)&&s.sendToHost(e,...o)}};try{u.exposeInMainWorld("cursorBrowser",p)}catch(e){console.error("[WebviewBrowser Preload] Failed to expose bridge:",e)}function c(){const e=`
 			(function() {
 				if (window.__cursorDialogOverridesApplied) {
 					return;
@@ -226,7 +226,7 @@
 
 				window.alert = function(message) {
 					const msgStr = String(message ?? '');
-					console.log('[CursorBrowser] 已屏蔽对话框：alert - ' + msgStr);
+					console.log('[CursorBrowser] Dialog suppressed: alert - ' + msgStr);
 					window.__cursorDialogConfig.dialogHistory.push({ type: 'alert', message: msgStr, timestamp: Date.now() });
 					return undefined;
 				};
@@ -234,7 +234,7 @@
 				window.confirm = function(message) {
 					const msgStr = String(message ?? '');
 					const result = window.__cursorDialogConfig.confirmResult;
-					console.log('[CursorBrowser] 已屏蔽对话框：confirm - ' + msgStr + '（返回 ' + result + ')');
+					console.log('[CursorBrowser] Dialog suppressed: confirm - ' + msgStr + ' (returning ' + result + ')');
 					window.__cursorDialogConfig.dialogHistory.push({ type: 'confirm', message: msgStr, result: result, timestamp: Date.now() });
 					return result;
 				};
@@ -244,73 +244,15 @@
 					const defVal = defaultValue ?? '';
 					const configuredResult = window.__cursorDialogConfig.promptResult;
 					const result = configuredResult !== null ? configuredResult : defVal;
-					console.log('[CursorBrowser] 已屏蔽对话框：prompt - ' + msgStr + '（返回：' + result + ')');
+					console.log('[CursorBrowser] Dialog suppressed: prompt - ' + msgStr + ' (returning: ' + result + ')');
 					window.__cursorDialogConfig.dialogHistory.push({ type: 'prompt', message: msgStr, defaultValue: defVal, result: result, timestamp: Date.now() });
 					return result;
 				};
 
-				console.log('[CursorBrowser] 已安装原生对话框覆盖，弹窗现在不会阻塞。');
+				console.log('[CursorBrowser] Native dialog overrides installed - dialogs are now non-blocking');
 			})();
-		`;try{a.executeJavaScript(e)}catch(o){console.error("[WebviewBrowser Preload] 早期对话框覆盖注入失败:",o)}}function __cursorApplyComposerUiTextOverrides(){const e=`
-			(function() {
-				if (window.__cursorComposerUiTextOverridesApplied) {
-					return;
-				}
-				window.__cursorComposerUiTextOverridesApplied = true;
+		`;try{a.executeJavaScript(e)}catch(o){console.error("[WebviewBrowser Preload] Failed to inject early dialog overrides:",o)}}c(),window.addEventListener("DOMContentLoaded",()=>{c(),document.addEventListener("click",e=>{if(!e.altKey)return;const o=e.target.closest("a[href]");if(!o)return;const t=o.href;!t||t.startsWith("javascript:")||(e.preventDefault(),e.stopPropagation(),s.sendToHost("open-url-side-group",{url:t}))},!0)}),document.addEventListener("keydown",e=>{if(!e.isTrusted)return;const o=l?e.metaKey:e.ctrlKey,t=e.shiftKey,i=e.altKey,n=e.key.toLowerCase();let r;if(o&&!t&&!i)switch(n){case"r":r="reload-page";break;case"l":r="focus-url-bar";break;case"t":r="new-browser-tab";break;case"i":r="focus-composer";break;case"b":r="toggle-sidebar";break;case"w":r="close-browser-tab";break;case"=":case"+":r="zoom-in";break;case"-":r="zoom-out";break;case"0":r="zoom-reset";break;case"z":r="undo";break;case"a":r="select-all";break;case"c":r="copy";break;case"v":r="paste";break;case"x":r="cut";break;case"[":r="navigate-back";break;case"]":r="navigate-forward";break;case"d":r="toggle-bookmark";break}if(o&&t&&!i)switch(n){case"i":r="open-devtools";break;case"z":r="redo";break}if(i&&!o&&!t)switch(n){case"arrowleft":r="navigate-back";break;case"arrowright":r="navigate-forward";break}if(!o&&!t&&!i)switch(n){case"f5":r="reload-page";break;case"f12":r="open-devtools";break}if(l&&e.metaKey&&e.altKey&&!t)switch(n){case"i":case"c":case"j":r="open-devtools";break}r&&(e.preventDefault(),s.sendToHost("keyboard-shortcut",{shortcut:r})),s.sendToHost("did-keydown",{key:e.key,keyCode:e.keyCode,code:e.code,shiftKey:e.shiftKey,altKey:e.altKey,ctrlKey:e.ctrlKey,metaKey:e.metaKey,repeat:e.repeat})},!0)})();
 
-				const textMap = new Map([
-					['Review', '查看改动']
-				]);
-
-				function applyTextOverrides(root) {
-					const scope = root && root.nodeType === Node.ELEMENT_NODE ? root : document.body;
-					if (!scope) {
-						return;
-					}
-
-					const walker = document.createTreeWalker(scope, NodeFilter.SHOW_TEXT);
-					let node;
-					while ((node = walker.nextNode())) {
-						const raw = node.nodeValue || '';
-						const trimmed = raw.trim();
-						const translated = textMap.get(trimmed);
-						if (translated) {
-							node.nodeValue = raw.replace(trimmed, translated);
-						}
-					}
-
-					const elements = scope.querySelectorAll ? scope.querySelectorAll('[aria-label], [title], [placeholder], input[value], button') : [];
-					for (const element of elements) {
-						for (const attr of ['aria-label', 'title', 'placeholder', 'value']) {
-							const value = element.getAttribute && element.getAttribute(attr);
-							const translated = textMap.get((value || '').trim());
-							if (translated) {
-								element.setAttribute(attr, translated);
-							}
-						}
-						const ownText = element.childNodes.length === 1 && element.firstChild.nodeType === Node.TEXT_NODE ? element.textContent.trim() : '';
-						const translated = textMap.get(ownText);
-						if (translated) {
-							element.textContent = translated;
-						}
-					}
-				}
-
-				applyTextOverrides(document.body);
-				const observer = new MutationObserver((mutations) => {
-					for (const mutation of mutations) {
-						for (const node of mutation.addedNodes) {
-							applyTextOverrides(node);
-						}
-						if (mutation.type === 'characterData') {
-							applyTextOverrides(mutation.target.parentElement);
-						}
-					}
-				});
-				observer.observe(document.documentElement, { childList: true, subtree: true, characterData: true });
-			})();
-		`;try{a.executeJavaScript(e)}catch(o){console.error("[WebviewBrowser Preload] Composer 文案覆盖注入失败:",o)}}c(),__cursorApplyComposerUiTextOverrides(),window.addEventListener("DOMContentLoaded",()=>{c(),__cursorApplyComposerUiTextOverrides(),document.addEventListener("click",e=>{if(!e.altKey)return;const o=e.target.closest("a[href]");if(!o)return;const t=o.href;!t||t.startsWith("javascript:")||(e.preventDefault(),e.stopPropagation(),s.sendToHost("open-url-side-group",{url:t}))},!0)}),document.addEventListener("keydown",e=>{if(!e.isTrusted)return;const o=l?e.metaKey:e.ctrlKey,t=e.shiftKey,i=e.altKey,n=e.key.toLowerCase();let r;if(o&&!t&&!i)switch(n){case"r":r="reload-page";break;case"l":r="focus-url-bar";break;case"t":r="new-browser-tab";break;case"i":r="focus-composer";break;case"b":r="toggle-sidebar";break;case"w":r="close-browser-tab";break;case"=":case"+":r="zoom-in";break;case"-":r="zoom-out";break;case"0":r="zoom-reset";break;case"z":r="undo";break;case"a":r="select-all";break;case"c":r="copy";break;case"v":r="paste";break;case"x":r="cut";break;case"[":r="navigate-back";break;case"]":r="navigate-forward";break;case"d":r="toggle-bookmark";break}if(o&&t&&!i)switch(n){case"i":r="open-devtools";break;case"z":r="redo";break}if(i&&!o&&!t)switch(n){case"arrowleft":r="navigate-back";break;case"arrowright":r="navigate-forward";break}if(!o&&!t&&!i)switch(n){case"f5":r="reload-page";break;case"f12":r="open-devtools";break}if(l&&e.metaKey&&e.altKey&&!t)switch(n){case"i":case"c":case"j":r="open-devtools";break}r&&(e.preventDefault(),s.sendToHost("keyboard-shortcut",{shortcut:r})),s.sendToHost("did-keydown",{key:e.key,keyCode:e.keyCode,code:e.code,shiftKey:e.shiftKey,altKey:e.altKey,ctrlKey:e.ctrlKey,metaKey:e.metaKey,repeat:e.repeat})},!0)})();
-
-//# sourceMappingURL=http://go/sourcemap/sourcemaps/d5b2fc092e16007956c9e5047f76097b9e626ca0/core/vs/workbench/contrib/composer/browser/preload-webview-browser.js.map
+//# sourceMappingURL=http://go/sourcemap/sourcemaps/e7a7e93f4d75f8272503ecf33cedbaae10114a10/core/vs/workbench/contrib/composer/browser/preload-webview-browser.js.map
 
 //# debugId=76139498-f2bd-5c63-b0db-360a730ffd32

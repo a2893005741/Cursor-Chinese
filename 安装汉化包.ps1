@@ -146,7 +146,7 @@ function AssertTargetProductJsonInstalled($PackageRoot, $TargetRoot) {
 
 function AssertPackageRoot($PackageRoot) {
     $null = GetCoreFiles $PackageRoot
-    $vsixPath = Join-Path $PackageRoot 'ms-ceintl.vscode-language-pack-zh-hans-1.121.2026052106-cursor105-fused.vsix'
+    $vsixPath = Join-Path $PackageRoot 'ms-ceintl.vscode-language-pack-zh-hans-1.121.2026052214.vsix'
     if (-not (Test-Path -Path $vsixPath -PathType Leaf)) { Fail 'Package is missing language pack VSIX.' }
     AssertPackageProductChecksums $PackageRoot
 }
@@ -164,7 +164,7 @@ function ShowVsixInstallHint($VsixPath) {
 }
 
 $packageRoot = FullPath $PSScriptRoot
-$vsixPath = Join-Path $packageRoot 'ms-ceintl.vscode-language-pack-zh-hans-1.121.2026052106-cursor105-fused.vsix'
+$vsixPath = Join-Path $packageRoot 'ms-ceintl.vscode-language-pack-zh-hans-1.121.2026052214.vsix'
 Info ("Package root: " + $packageRoot)
 
 AssertPackageRoot $packageRoot
