@@ -140,6 +140,27 @@ function AssertPackageProductChecksums($Root) {
     }
 }
 
+function ReadProductMeta($Root) {
+    $productPath = Join-Path $Root 'resources\app\product.json'
+    if (-not (Test-Path -Path $productPath -PathType Leaf)) { Fail ("Missing product.json: " + $productPath) }
+    $product = Get-Content -Path $productPath -Raw | ConvertFrom-Json
+    return [pscustomobject]@{
+        Path = $productPath
+        Version = [string]$product.version
+        Commit = [string]$product.commit
+        Date = [string]$product.date
+    }
+}
+
+function AssertCompatibleCursorBuild($PackageRoot, $TargetRoot) {
+    $packageMeta = ReadProductMeta $PackageRoot
+    $targetMeta = ReadProductMeta $TargetRoot
+    if (($packageMeta.Version -ne $targetMeta.Version) -or ($packageMeta.Commit -ne $targetMeta.Commit)) {
+        Fail ("Cursor build mismatch. This localization package is for Cursor " + $packageMeta.Version + " (" + $packageMeta.Commit + "), but the target is Cursor " + $targetMeta.Version + " (" + $targetMeta.Commit + "). Please rebuild/update the localization package for the installed Cursor version before copying core files.")
+    }
+    Ok ("Cursor build matched: " + $targetMeta.Version + " (" + $targetMeta.Commit + ")")
+}
+
 function AssertTargetProductJsonInstalled($PackageRoot, $TargetRoot) {
     AssertFileMatchesPackage $PackageRoot $TargetRoot 'resources\app\product.json'
 }
@@ -173,6 +194,7 @@ Ok 'Package structure verified: core patch files + VSIX'
 $resolvedCursorRoot = FindCursorRoot $CursorRoot
 if ([string]::IsNullOrWhiteSpace($resolvedCursorRoot)) { Fail 'Cursor root was not found. Use -CursorRoot to specify it manually.' }
 Ok ("Cursor root: " + $resolvedCursorRoot)
+AssertCompatibleCursorBuild $packageRoot $resolvedCursorRoot
 
 if ($VerifyOnly) {
     AssertInstalledFiles $packageRoot $resolvedCursorRoot
