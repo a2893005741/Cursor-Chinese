@@ -2395,7 +2395,7 @@
 	"date": "2026-05-31T17:46:29.630Z",
 	"checksums": {
 		"vs/base/parts/sandbox/electron-sandbox/preload.js": "J4C1OFTNE+YTemIxDQQvXNy0en2TQvGr4K1bEFxUOR0",
-		"vs/workbench/workbench.desktop.main.js": "UnO6C9IKoIYxYGG/zCsA/cz1zJ73N9xag+HwGm1KKq0",
+		"vs/workbench/workbench.desktop.main.js": "TumFtb3qon+GeyFoPXhwgUqrO1xKVlNIt1bpY5ihZw0",
 		"vs/workbench/workbench.desktop.main.css": "42UdZ5sGjCXBfV3LHa4ZzDxaPiSbODqPLSkJpev6BI4",
 		"vs/workbench/api/node/extensionHostProcess.js": "IunRC5XElKUFVJhzX+Zcob43F4Wvg96Z0Iv+87TodYo",
 		"vs/code/electron-sandbox/workbench/workbench.html": "g2I3CZ/xPc/Mp8LOXiN6rdC20u8PNfzsAesoQeNeswg",
