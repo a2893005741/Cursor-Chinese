@@ -152,11 +152,22 @@ function ReadProductMeta($Root) {
     }
 }
 
+function GetCursorExeVersion($Root) {
+    $exePath = Join-Path $Root 'Cursor.exe'
+    if (-not (Test-Path -Path $exePath -PathType Leaf)) { return '' }
+    try { return [string]([System.Diagnostics.FileVersionInfo]::GetVersionInfo($exePath).ProductVersion) } catch { return '' }
+}
+
 function AssertCompatibleCursorBuild($PackageRoot, $TargetRoot) {
     $packageMeta = ReadProductMeta $PackageRoot
     $targetMeta = ReadProductMeta $TargetRoot
     if (($packageMeta.Version -ne $targetMeta.Version) -or ($packageMeta.Commit -ne $targetMeta.Commit)) {
-        Fail ("Cursor build mismatch. This localization package is for Cursor " + $packageMeta.Version + " (" + $packageMeta.Commit + "), but the target is Cursor " + $targetMeta.Version + " (" + $targetMeta.Commit + "). Please rebuild/update the localization package for the installed Cursor version before copying core files.")
+        $exeVersion = GetCursorExeVersion $TargetRoot
+        if ($exeVersion -eq $packageMeta.Version) {
+            Warn ("Target product.json reports Cursor " + $targetMeta.Version + " (" + $targetMeta.Commit + "), but Cursor.exe is " + $exeVersion + ". Treating target as a mixed install and allowing repair copy from this package.")
+            return
+        }
+        Fail ("Cursor build mismatch. This localization package is for Cursor " + $packageMeta.Version + " (" + $packageMeta.Commit + "), but target product.json is Cursor " + $targetMeta.Version + " (" + $targetMeta.Commit + ") and Cursor.exe is " + $exeVersion + ". Please use the matching localization package.")
     }
     Ok ("Cursor build matched: " + $targetMeta.Version + " (" + $targetMeta.Commit + ")")
 }
