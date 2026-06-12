@@ -1,25 +1,55 @@
-# Cursor 汉化复制包说明
+# Cursor 中文汉化包
 
-这个目录是给 Cursor 使用的精简汉化复制包：复制包只覆盖少量核心补丁文件，基础界面中文由 VSIX 语言包负责。
+这是一个面向 Windows 版 Cursor 的中文汉化包。推荐普通用户使用图形更新器安装和更新；仓库内脚本保留为手动备用方式。
 
-## 一键安装
+## 推荐方式：使用图形更新器
+
+1. 安装 [Git for Windows](https://git-scm.com/download/win)，并确保 `git.exe` 可以在系统 `PATH` 中运行。
+2. 从本仓库 Releases 下载并运行图形更新器：
+   `CursorZhLauncher-v1.0.1.exe`
+3. 在更新器中点击“检查本机 Cursor”，确认检测到本机 Cursor 版本。
+4. 点击“同步汉化仓库”。更新器会使用系统 `git.exe` 拉取：
+   `https://github.com/a2893005741/Cursor-Chinese.git`
+5. 点击“更新本地汉化文件”。更新器只会复制安装所需白名单文件到本地可安装包。
+6. 当“汉化包版本”和“本机 Cursor”显示匹配后，先完全关闭 Cursor。
+7. 点击“安装核心汉化”。更新器会先执行 `安装汉化包.ps1 -WhatIf`，检查通过后才执行真实安装。
+8. 点击“安装融合语言包”，安装基础菜单、命令、设置和扩展翻译所需的 VSIX。
+9. 重新打开 Cursor。
+
+更新器使用的运行时目录：
+
+- 仓库缓存：`%LOCALAPPDATA%\CursorZhUpdater\repo`
+- 本地可安装包：`%LOCALAPPDATA%\CursorZhUpdater\package`
+- 日志目录：`%LOCALAPPDATA%\CursorZhUpdater\logs`
+
+更新器不会直接把仓库源码目录当作安装包使用。它会先同步到本机缓存，再复制安装所需文件到本地可安装包目录。
+
+## 手动备用方式
+
+如果不使用图形更新器，可以克隆或下载本仓库后，在仓库目录手动执行：
 
 1. 先完全关闭 Cursor。
 2. 双击 `一键安装汉化包.cmd`，复制核心汉化文件。
-3. 手动安装本目录下的 `ms-ceintl.vscode-language-pack-zh-hans-1.121.2026052106-cursor105-fused.vsix`，用于基础菜单、命令、设置、扩展翻译。
-4. 等提示完成后，重新打开 Cursor。
+3. 双击 `安装融合语言包扩展.cmd`，或手动安装：
+   `ms-ceintl.vscode-language-pack-zh-hans-1.121.2026052214.vsix`
+4. 重新打开 Cursor。
 
-## 只检查是否真正生效
+手动方式不会自动同步远端仓库，也不会帮你判断当前仓库内容是否匹配本机 Cursor。版本不匹配时不要强行覆盖。
 
-如果你已经手动覆盖或运行过安装，但界面仍有英文，先双击 `只检查是否已正确汉化.cmd`。
+## 检查是否生效
 
-这个检查不会复制或修改任何真实安装文件，只会确认真实 Cursor 目录里的核心补丁文件是否与本复制包一致。基础界面中文由 VSIX 语言包负责。
+如果安装后界面仍有英文，先双击：
 
-如果这里检查失败，说明真实目录当前实际加载的关键文件还不是本复制包里的文件；如果这里检查通过但界面仍英文，再继续排查缓存或其他运行态来源。
+`只检查是否已正确汉化.cmd`
+
+这个检查不会复制或修改真实 Cursor 安装目录，只会确认真实 Cursor 目录里的核心补丁文件是否与本目录一致。
+
+- 检查失败：真实 Cursor 目录当前加载的关键文件不是本汉化包里的文件。
+- 检查通过但仍有英文：继续排查 VSIX 是否安装、Cursor 缓存、运行态动态文案或尚未补齐的界面英文。
 
 ## 当前复制内容
 
-安装脚本只复制这些核心补丁文件和 Cursor 完整性校验关联文件：
+核心安装脚本只复制这些文件：
 
 - `resources/app/product.json`
 - `resources/app/out/main.js`
@@ -34,7 +64,6 @@
 - `locales/en-GB.pak`
 - `locales/en-US.pak`
 
-基础界面中文由这个 VSIX 负责：
+基础界面中文由融合语言包负责：
 
-- `ms-ceintl.vscode-language-pack-zh-hans-1.121.2026052106-cursor105-fused.vsix`
-
+- `ms-ceintl.vscode-language-pack-zh-hans-1.121.2026052214.vsix`
