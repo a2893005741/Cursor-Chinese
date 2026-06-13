@@ -5,8 +5,10 @@
 ## 推荐方式：使用图形更新器
 
 1. 安装 [Git for Windows](https://git-scm.com/download/win)，并确保 `git.exe` 可以在系统 `PATH` 中运行。
-2. 从本仓库 Releases 下载并运行图形更新器：
-   `CursorZhLauncher-v1.0.1.exe`
+2. 从本仓库 Releases 下载并运行版本号最高的图形更新器：
+   `CursorZhLauncher-v*.exe`
+
+   例如当前应优先使用 `CursorZhLauncher-v1.0.3.exe`。不要下载旧版本，除非新版无法启动且你正在排查兼容问题。
 3. 在更新器中点击“检查本机 Cursor”，确认检测到本机 Cursor 版本。
 4. 点击“同步汉化仓库”。更新器会使用系统 `git.exe` 拉取：
    `https://github.com/a2893005741/Cursor-Chinese.git`
@@ -23,6 +25,13 @@
 - 日志目录：`%LOCALAPPDATA%\CursorZhUpdater\logs`
 
 更新器不会直接把仓库源码目录当作安装包使用。它会先同步到本机缓存，再复制安装所需文件到本地可安装包目录。
+
+## 版本号优先
+
+- 总是优先下载 Releases 中版本号最高的 `CursorZhLauncher-v*.exe`。
+- 新版本会保留旧版本文件名，不会覆盖已经运行中的旧 EXE。
+- 如果你已经打开了旧版本，关闭旧窗口后再运行新版本。
+- README、Release 文案或截图中的旧版本号只作为历史示例；实际下载以 Releases 里最高版本为准。
 
 ## 手动备用方式
 
