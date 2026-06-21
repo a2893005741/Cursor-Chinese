@@ -61,6 +61,7 @@ function GetCoreFiles($PackageRoot) {
         'resources\app\out\vs\workbench\workbench.desktop.main.css',
         'resources\app\out\vs\workbench\api\node\extensionHostProcess.js',
         'resources\app\out\vs\workbench\workbench.desktop.main.js',
+        'resources\app\out\vs\workbench\workbench.glass.main.js',
         'resources\app\out\vs\workbench\contrib\composer\browser\preload-webview-browser.js',
         'resources\app\out\vs\code\electron-sandbox\workbench\workbench.js',
         'locales\en-GB.pak',
