@@ -4,7 +4,7 @@
 	"licenseUrl": "https://cursor.com/license.txt",
 	"serverGreeting": [],
 	"serverLicense": [],
-	"vscodeVersion": "1.105.1",
+	"vscodeVersion": "1.125.0",
 	"serverLicensePrompt": "",
 	"serverApplicationName": "cursor-server",
 	"serverDataFolderName": ".cursor-server",
@@ -426,11 +426,16 @@
 		],
 		"GitHub.vscode-pull-request-github": [
 			"activeComment",
+			"chatContextProvider",
+			"chatParticipantAdditions",
+			"chatParticipantPrivate",
+			"chatSessionsProvider",
 			"codiconDecoration",
 			"codeActionRanges",
 			"commentingRangeHint",
 			"commentReactor",
 			"commentReveal",
+			"commentsDraftState",
 			"commentThreadApplicability",
 			"contribAccessibilityHelpContent",
 			"contribCommentEditorActionsMenu",
@@ -438,13 +443,16 @@
 			"contribCommentThreadAdditionalMenu",
 			"contribCommentsViewThreadMenus",
 			"contribEditorContentMenu",
-			"contribMultiDiffEditorMenus",
 			"contribShareMenu",
 			"diffCommand",
+			"languageModelToolResultAudience",
+			"markdownAlertSyntax",
 			"quickDiffProvider",
+			"remoteCodingAgents",
 			"shareProvider",
-			"tabInputTextMerge",
+			"tabInputMultiDiff",
 			"tokenInformation",
+			"treeItemMarkdownLabel",
 			"treeViewMarkdownMessage"
 		],
 		"GitHub.copilot": [
@@ -493,7 +501,6 @@
 			"chatReferenceBinaryData",
 			"languageModelSystem",
 			"languageModelCapabilities",
-			"languageModelDataPart",
 			"chatStatusItem"
 		],
 		"GitHub.remotehub": [
@@ -543,6 +550,10 @@
 			"portsAttributes"
 		],
 		"dbaeumer.vscode-eslint": [],
+		"TypeScriptTeam.native-preview": [
+			"editorHoverVerbosityLevel",
+			"multiDocumentHighlightProvider"
+		],
 		"ms-vscode.azure-sphere-tools-ui": [
 			"tunnels"
 		],
@@ -2340,7 +2351,7 @@
 		"rust-lang.rust-analyzer",
 		"Shopify.ruby-lsp"
 	],
-	"version": "3.9.16",
+	"version": "3.11.19",
 	"removeTelemetryMachineId": true,
 	"enabledTelemetryLevels": {
 		"error": true,
@@ -2393,16 +2404,16 @@
 		"__GULPFILE_REMOVE_LINE_BEFORE_COMPILING____disable_user_intent_agents__",
 		"__GULPFILE_REMOVE_LINE_BEFORE_COMPILING____disable_local_mode__"
 	],
-	"commit": "042b3c1a4c53f2c3808067f519fbfc67b72cad80",
-	"realCommit": "042b3c1a4c53f2c3808067f519fbfc67b72cad8b",
-	"date": "2026-06-27T06:41:01.941Z",
+	"commit": "bf249e6efb5b097f23d7e21d7283429f0760b740",
+	"realCommit": "bf249e6efb5b097f23d7e21d7283429f0760b74a",
+	"date": "2026-07-12T21:39:24.175Z",
 	"checksums": {
-		"vs/base/parts/sandbox/electron-sandbox/preload.js": "A74MpArbv1pIkvUzmplLz+uZp0fCCtokqgIizdKwKUs",
-		"vs/workbench/workbench.desktop.main.js": "vtMgUNSLch6uLIW2QI6SZ/UOjDhiQ9MQClqvbnQQt/Y",
-		"vs/workbench/workbench.desktop.main.css": "4pBjcLS0huApRVQYFQtXS63QNnjPQRuts0eZ9CELIdY",
-		"vs/workbench/api/node/extensionHostProcess.js": "dDTHpFxm2sJ8R1fflHC2kpT3PS4d3TOiVgbMDNkTFbY",
+		"vs/base/parts/sandbox/electron-sandbox/preload.js": "2/60jU/jwhbV9iMI605RAn0gdb5Qvswa5yL9SkDrpXM",
+		"vs/workbench/workbench.desktop.main.js": "r7f5JL3UMSHjeqQhk35F3ZJaoxWEspXctusL6GjMLKI",
+		"vs/workbench/workbench.desktop.main.css": "nhXUyrxNT1/f3L4+Szy0sVutoc+fnQYwNmfQ0XQRmx4",
+		"vs/workbench/api/node/extensionHostProcess.js": "pihlESzwALqYg9Rw8PBQjCpVUfM/7jHx3YoDeXtXkZI",
 		"vs/code/electron-sandbox/workbench/workbench.html": "xM88riEAB8YOlPKfLX9onuni9D3kgWC6L0LspVZUvQs",
-		"vs/code/electron-sandbox/workbench/workbench.js": "v8+O5Dw3YSJSr2eLhA7QUybPmw9PygnkQorHj/FkElw"
+		"vs/code/electron-sandbox/workbench/workbench.js": "EuP/pYNveqTy1eNQzmONDPpz+VgAe7EqLm7sPmRi5RI"
 	},
 	"target": "user"
 }
