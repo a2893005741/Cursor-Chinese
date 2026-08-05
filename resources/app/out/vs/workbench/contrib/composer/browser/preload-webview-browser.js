@@ -1,6 +1,6 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="6e411980-f8f3-5617-8713-307d95f650e2")}catch(e){}}();
-(function(){"use strict";const{ipcRenderer:s,contextBridge:u,webFrame:a}=require("electron"),d=[".okta.com",".okta-emea.com",".oktapreview.com",".duosecurity.com",".duo.com",".login.microsoftonline.com",".onelogin.com",".auth0.com",".pingidentity.com",".pingone.com",".rippling.com"];function f(){try{const e=window.location.hostname.toLowerCase();if(!d.some(i=>e===i.slice(1)||e.endsWith(i)))return;a.executeJavaScript(`
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="8ec6ee88-d6c6-58ba-b44a-d2ba6f962431")}catch(e){}}();
+(function(){"use strict";const{ipcRenderer:a,contextBridge:u,webFrame:s}=require("electron"),d=[".okta.com",".okta-emea.com",".oktapreview.com",".duosecurity.com",".duo.com",".login.microsoftonline.com",".onelogin.com",".auth0.com",".pingidentity.com",".pingone.com",".rippling.com"];function f(){try{const e=window.location.hostname.toLowerCase();if(!d.some(i=>e===i.slice(1)||e.endsWith(i)))return;s.executeJavaScript(`
 				(function() {
 					if (typeof navigator === 'undefined' || !navigator.permissions || !navigator.permissions.query) {
 						return;
@@ -25,7 +25,7 @@
 						return originalQuery(descriptor);
 					};
 				})();
-			`)}catch(e){console.error("[WebviewBrowser Preload] Failed to inject local network access polyfill:",e)}}function g(){try{a.executeJavaScript(`
+			`)}catch(e){console.error("[WebviewBrowser Preload] Failed to inject local network access polyfill:",e)}}function g(){try{s.executeJavaScript(`
 				(function() {
 					if (typeof navigator === 'undefined' || !navigator.credentials) {
 						return;
@@ -194,7 +194,7 @@
 						}
 					}
 				})();
-			`)}catch(e){console.error("[WebviewBrowser Preload] Failed to inject WebAuthn polyfill:",e)}}f(),g();const l=process.platform==="darwin",p={send:(e,...o)=>{["focus-url-bar","element-selected","element-updated","element-picked","element-hovered","area-screenshot-selected","style-changes-confirmed","css-inspector-style-change","open-url-side-group","open-url-new-tab","focus-composer-input","css-inspector-undo","css-inspector-redo","show-dialog","show-dialog-dummy","passkey-request-stalled","browser-error-action"].includes(e)&&s.sendToHost(e,...o)}};try{u.exposeInMainWorld("cursorBrowser",p)}catch(e){console.error("[WebviewBrowser Preload] Failed to expose bridge:",e)}function c(){const e=`
+			`)}catch(e){console.error("[WebviewBrowser Preload] Failed to inject WebAuthn polyfill:",e)}}f(),g();const l=process.platform==="darwin",p={send:(e,...o)=>{["focus-url-bar","element-selected","element-updated","element-picked","element-hovered","selection-resynced","selection-restored","area-screenshot-selected","open-url-side-group","open-url-new-tab","focus-composer-input","show-dialog","show-dialog-dummy","passkey-request-stalled","browser-error-action"].includes(e)&&a.sendToHost(e,...o)}};try{u.exposeInMainWorld("cursorBrowser",p)}catch(e){console.error("[WebviewBrowser Preload] Failed to expose bridge:",e)}function c(){const e=`
 			(function() {
 				if (window.__cursorDialogOverridesApplied) {
 					return;
@@ -251,8 +251,8 @@
 
 				console.log('[CursorBrowser] Native dialog overrides installed - dialogs are now non-blocking');
 			})();
-		`;try{a.executeJavaScript(e)}catch(o){console.error("[WebviewBrowser Preload] Failed to inject early dialog overrides:",o)}}c(),window.addEventListener("DOMContentLoaded",()=>{c(),document.addEventListener("click",e=>{if(!e.altKey)return;const o=e.target.closest("a[href]");if(!o)return;const t=o.href;!t||t.startsWith("javascript:")||(e.preventDefault(),e.stopPropagation(),s.sendToHost("open-url-side-group",{url:t}))},!0)}),document.addEventListener("keydown",e=>{if(!e.isTrusted)return;const o=l?e.metaKey:e.ctrlKey,t=e.shiftKey,i=e.altKey,n=e.key.toLowerCase();let r;if(o&&!t&&!i)switch(n){case"r":r="reload-page";break;case"l":r="focus-url-bar";break;case"t":r="new-browser-tab";break;case"i":r="focus-composer";break;case"f":r="find-in-page";break;case"b":r="toggle-sidebar";break;case"w":r="close-browser-tab";break;case"=":case"+":r="zoom-in";break;case"-":r="zoom-out";break;case"0":r="zoom-reset";break;case"z":r="undo";break;case"a":r="select-all";break;case"c":r="copy";break;case"v":r="paste";break;case"x":r="cut";break;case"[":r="navigate-back";break;case"]":r="navigate-forward";break;case"d":r="toggle-bookmark";break}if(o&&t&&!i)switch(n){case"i":r="open-devtools";break;case"z":r="redo";break}if(i&&!o&&!t)switch(n){case"arrowleft":r="navigate-back";break;case"arrowright":r="navigate-forward";break}if(!o&&!t&&!i)switch(n){case"f5":r="reload-page";break;case"f12":r="open-devtools";break}if(l&&e.metaKey&&e.altKey&&!t)switch(n){case"i":case"c":case"j":r="open-devtools";break}r&&(e.preventDefault(),s.sendToHost("keyboard-shortcut",{shortcut:r})),s.sendToHost("did-keydown",{key:e.key,keyCode:e.keyCode,code:e.code,shiftKey:e.shiftKey,altKey:e.altKey,ctrlKey:e.ctrlKey,metaKey:e.metaKey,repeat:e.repeat})},!0)})();
+		`;try{s.executeJavaScript(e)}catch(o){console.error("[WebviewBrowser Preload] Failed to inject early dialog overrides:",o)}}c(),window.addEventListener("DOMContentLoaded",()=>{c(),document.addEventListener("click",e=>{if(!e.altKey)return;const o=e.target.closest("a[href]");if(!o)return;const t=o.href;!t||t.startsWith("javascript:")||(e.preventDefault(),e.stopPropagation(),a.sendToHost("open-url-side-group",{url:t}))},!0)}),document.addEventListener("keydown",e=>{if(!e.isTrusted)return;const o=l?e.metaKey:e.ctrlKey,t=e.shiftKey,i=e.altKey,n=e.key.toLowerCase();let r;if(o&&!t&&!i)switch(n){case"r":r="reload-page";break;case"l":r="focus-url-bar";break;case"t":r="new-browser-tab";break;case"i":r="focus-composer";break;case"f":r="find-in-page";break;case"b":r="toggle-sidebar";break;case"w":r="close-browser-tab";break;case"=":case"+":r="zoom-in";break;case"-":r="zoom-out";break;case"0":r="zoom-reset";break;case"z":r="undo";break;case"a":r="select-all";break;case"c":r="copy";break;case"v":r="paste";break;case"x":r="cut";break;case"[":r="navigate-back";break;case"]":r="navigate-forward";break;case"d":r="toggle-bookmark";break}if(o&&t&&!i)switch(n){case"i":r="open-devtools";break;case"z":r="redo";break}if(i&&!o&&!t)switch(n){case"arrowleft":r="navigate-back";break;case"arrowright":r="navigate-forward";break}if(!o&&!t&&!i)switch(n){case"f5":r="reload-page";break;case"f12":r="open-devtools";break}if(l&&e.metaKey&&e.altKey&&!t)switch(n){case"i":case"c":case"j":r="open-devtools";break}r&&(e.preventDefault(),a.sendToHost("keyboard-shortcut",{shortcut:r})),a.sendToHost("did-keydown",{key:e.key,keyCode:e.keyCode,code:e.code,shiftKey:e.shiftKey,altKey:e.altKey,ctrlKey:e.ctrlKey,metaKey:e.metaKey,repeat:e.repeat})},!0)})();
 
-//# sourceMappingURL=http://go/sourcemap/sourcemaps/bf249e6efb5b097f23d7e21d7283429f0760b740/core/vs/workbench/contrib/composer/browser/preload-webview-browser.js.map
+//# sourceMappingURL=http://go/sourcemap/sourcemaps/047548b00c1a079373d74d00183f32510a4a41e0/core/vs/workbench/contrib/composer/browser/preload-webview-browser.js.map
 
-//# debugId=6e411980-f8f3-5617-8713-307d95f650e2
+//# debugId=8ec6ee88-d6c6-58ba-b44a-d2ba6f962431
