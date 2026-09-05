@@ -1,6 +1,6 @@
 
-!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="8ec6ee88-d6c6-58ba-b44a-d2ba6f962431")}catch(e){}}();
-(function(){"use strict";const{ipcRenderer:a,contextBridge:u,webFrame:s}=require("electron"),d=[".okta.com",".okta-emea.com",".oktapreview.com",".duosecurity.com",".duo.com",".login.microsoftonline.com",".onelogin.com",".auth0.com",".pingidentity.com",".pingone.com",".rippling.com"];function f(){try{const e=window.location.hostname.toLowerCase();if(!d.some(i=>e===i.slice(1)||e.endsWith(i)))return;s.executeJavaScript(`
+!function(){try{var e="undefined"!=typeof window?window:"undefined"!=typeof global?global:"undefined"!=typeof self?self:{},n=(new e.Error).stack;n&&(e._sentryDebugIds=e._sentryDebugIds||{},e._sentryDebugIds[n]="86e068cf-20bc-56bd-ba8b-2387813866e4")}catch(e){}}();
+(function(){"use strict";const{ipcRenderer:a,contextBridge:u,webFrame:s}=require("electron"),d=[".okta.com",".okta-emea.com",".oktapreview.com",".duosecurity.com",".duo.com",".login.microsoftonline.com",".onelogin.com",".auth0.com",".pingidentity.com",".pingone.com",".rippling.com"];function p(){try{const e=window.location.hostname.toLowerCase();if(!d.some(i=>e===i.slice(1)||e.endsWith(i)))return;s.executeJavaScript(`
 				(function() {
 					if (typeof navigator === 'undefined' || !navigator.permissions || !navigator.permissions.query) {
 						return;
@@ -25,7 +25,7 @@
 						return originalQuery(descriptor);
 					};
 				})();
-			`)}catch(e){console.error("[WebviewBrowser Preload] Failed to inject local network access polyfill:",e)}}function g(){try{s.executeJavaScript(`
+			`)}catch(e){console.error("[WebviewBrowser Preload] Failed to inject local network access polyfill:",e)}}function f(){try{s.executeJavaScript(`
 				(function() {
 					if (typeof navigator === 'undefined' || !navigator.credentials) {
 						return;
@@ -36,9 +36,11 @@
 					navigator.credentials.__webAuthnPolyfillApplied = true;
 
 					var WEBAUTHN_NOTIFY_DELAY_MS = 10000;
-					var WEBAUTHN_ABORT_DELAY_MS = 45000;
-					var lastNotifiedPasskeyAt = 0;
-					function notify() {
+					var WEBAUTHN_MIN_TIMEOUT_MS = 30000;
+					var WEBAUTHN_DEFAULT_TIMEOUT_MS = 300000;
+					var WEBAUTHN_MAX_TIMEOUT_MS = 600000;
+					var lastNotifiedPasskeyAt = -Infinity;
+					function notify(channel) {
 						var now = Date.now();
 						if (now - lastNotifiedPasskeyAt < WEBAUTHN_NOTIFY_DELAY_MS) {
 							return;
@@ -46,7 +48,7 @@
 						lastNotifiedPasskeyAt = now;
 						try {
 							if (window.cursorBrowser && window.cursorBrowser.send) {
-								window.cursorBrowser.send('passkey-request-stalled');
+								window.cursorBrowser.send(channel);
 							}
 						} catch (error) {
 							console.debug('[WebviewBrowser Preload] Failed to notify passkey support status:', error);
@@ -67,13 +69,64 @@
 					function createTimeoutError() {
 						return new DOMException(
 							'The WebAuthn request timed out in the Cursor browser.',
-							'TimeoutError'
+							'NotAllowedError'
 						);
 					}
+
+					function createConditionalMediationError() {
+						return new DOMException(
+							'Conditional mediation is not supported in the Cursor browser.',
+							'NotSupportedError'
+						);
+					}
+
+					function createHybridOnlyError() {
+						return new DOMException(
+							'This passkey is on another device (phone or tablet) and requires a QR code, which the Cursor browser cannot display.',
+							'NotAllowedError'
+						);
+					}
+
+					// Get-only by design: a get() whose allowCredentials all list
+					// only hybrid can never complete without QR UI, so fail it
+					// fast. create() has no allowCredentials and phone-via-QR
+					// registration is a legitimate flow, so it is not gated here.
+					function isHybridOnlyRequest(options) {
+						var allowCredentials = options && options.publicKey && options.publicKey.allowCredentials;
+						if (!Array.isArray(allowCredentials) || allowCredentials.length === 0) {
+							return false;
+						}
+						return allowCredentials.every(function(credential) {
+							return credential
+								&& Array.isArray(credential.transports)
+								&& credential.transports.length > 0
+								&& credential.transports.every(function(transport) {
+									return transport === 'hybrid' || transport === 'cable';
+								});
+						});
+					}
+
+					function getEffectiveTimeoutMs(options) {
+						var requestedTimeout = options && options.publicKey && options.publicKey.timeout;
+						var requested = typeof requestedTimeout === 'number' && Number.isFinite(requestedTimeout)
+							? requestedTimeout
+							: WEBAUTHN_DEFAULT_TIMEOUT_MS;
+						return Math.min(Math.max(requested, WEBAUTHN_MIN_TIMEOUT_MS), WEBAUTHN_MAX_TIMEOUT_MS);
+					}
+
+					var origCreate = navigator.credentials.create;
+					var origGet = navigator.credentials.get;
 
 					function wrapWebAuthnRequest(originalMethod, options, args) {
 						if (!originalMethod) {
 							return Promise.reject(createNotSupportedError());
+						}
+						if (options.mediation === 'conditional') {
+							return Promise.reject(createConditionalMediationError());
+						}
+						if (isHybridOnlyRequest(options)) {
+							notify('passkey-hybrid-unsupported');
+							return Promise.reject(createHybridOnlyError());
 						}
 
 						var callerSignal = options && options.signal;
@@ -94,15 +147,13 @@
 						var abortTimeout;
 						var didFinish = false;
 						var didNotify = false;
-
 						function notifyIfNeeded() {
 							if (didNotify) {
 								return;
 							}
 							didNotify = true;
-							notify();
+							notify('passkey-request-stalled');
 						}
-
 						function cleanup() {
 							clearTimeout(notifyTimeout);
 							clearTimeout(abortTimeout);
@@ -155,7 +206,7 @@
 									abortController.abort();
 								}
 								rejectIfActive(createTimeoutError());
-							}, WEBAUTHN_ABORT_DELAY_MS);
+							}, getEffectiveTimeoutMs(options));
 
 							Promise.resolve().then(function() {
 								return originalMethod.apply(navigator.credentials, requestArgs);
@@ -165,9 +216,6 @@
 							);
 						});
 					}
-
-					var origCreate = navigator.credentials.create;
-					var origGet = navigator.credentials.get;
 
 					navigator.credentials.create = function(options) {
 						if (options && options.publicKey) {
@@ -184,17 +232,25 @@
 					};
 
 					if (typeof PublicKeyCredential !== 'undefined') {
-						PublicKeyCredential.isUserVerifyingPlatformAuthenticatorAvailable = function() {
-							return Promise.resolve(false);
-						};
 						if (typeof PublicKeyCredential.isConditionalMediationAvailable === 'function') {
 							PublicKeyCredential.isConditionalMediationAvailable = function() {
 								return Promise.resolve(false);
 							};
 						}
+						if (typeof PublicKeyCredential.getClientCapabilities === 'function') {
+							var origGetClientCapabilities = PublicKeyCredential.getClientCapabilities.bind(PublicKeyCredential);
+							PublicKeyCredential.getClientCapabilities = function() {
+								return origGetClientCapabilities.apply(undefined, arguments).then(function(capabilities) {
+									var patched = Object.assign({}, capabilities);
+									patched.conditionalGet = false;
+									patched.conditionalCreate = false;
+									return patched;
+								});
+							};
+						}
 					}
 				})();
-			`)}catch(e){console.error("[WebviewBrowser Preload] Failed to inject WebAuthn polyfill:",e)}}f(),g();const l=process.platform==="darwin",p={send:(e,...o)=>{["focus-url-bar","element-selected","element-updated","element-picked","element-hovered","selection-resynced","selection-restored","area-screenshot-selected","open-url-side-group","open-url-new-tab","focus-composer-input","show-dialog","show-dialog-dummy","passkey-request-stalled","browser-error-action"].includes(e)&&a.sendToHost(e,...o)}};try{u.exposeInMainWorld("cursorBrowser",p)}catch(e){console.error("[WebviewBrowser Preload] Failed to expose bridge:",e)}function c(){const e=`
+			`)}catch(e){console.error("[WebviewBrowser Preload] Failed to inject WebAuthn polyfill:",e)}}p(),f();const l=process.platform==="darwin",g={send:(e,...t)=>{["focus-url-bar","element-selected","element-updated","element-picked","element-hovered","selection-resynced","selection-restored","area-screenshot-selected","open-url-side-group","open-url-new-tab","focus-composer-input","show-dialog","show-dialog-dummy","passkey-request-stalled","passkey-hybrid-unsupported","browser-error-action"].includes(e)&&a.sendToHost(e,...t)}};try{u.exposeInMainWorld("cursorBrowser",g)}catch(e){console.error("[WebviewBrowser Preload] Failed to expose bridge:",e)}function c(){const e=`
 			(function() {
 				if (window.__cursorDialogOverridesApplied) {
 					return;
@@ -251,8 +307,8 @@
 
 				console.log('[CursorBrowser] Native dialog overrides installed - dialogs are now non-blocking');
 			})();
-		`;try{s.executeJavaScript(e)}catch(o){console.error("[WebviewBrowser Preload] Failed to inject early dialog overrides:",o)}}c(),window.addEventListener("DOMContentLoaded",()=>{c(),document.addEventListener("click",e=>{if(!e.altKey)return;const o=e.target.closest("a[href]");if(!o)return;const t=o.href;!t||t.startsWith("javascript:")||(e.preventDefault(),e.stopPropagation(),a.sendToHost("open-url-side-group",{url:t}))},!0)}),document.addEventListener("keydown",e=>{if(!e.isTrusted)return;const o=l?e.metaKey:e.ctrlKey,t=e.shiftKey,i=e.altKey,n=e.key.toLowerCase();let r;if(o&&!t&&!i)switch(n){case"r":r="reload-page";break;case"l":r="focus-url-bar";break;case"t":r="new-browser-tab";break;case"i":r="focus-composer";break;case"f":r="find-in-page";break;case"b":r="toggle-sidebar";break;case"w":r="close-browser-tab";break;case"=":case"+":r="zoom-in";break;case"-":r="zoom-out";break;case"0":r="zoom-reset";break;case"z":r="undo";break;case"a":r="select-all";break;case"c":r="copy";break;case"v":r="paste";break;case"x":r="cut";break;case"[":r="navigate-back";break;case"]":r="navigate-forward";break;case"d":r="toggle-bookmark";break}if(o&&t&&!i)switch(n){case"i":r="open-devtools";break;case"z":r="redo";break}if(i&&!o&&!t)switch(n){case"arrowleft":r="navigate-back";break;case"arrowright":r="navigate-forward";break}if(!o&&!t&&!i)switch(n){case"f5":r="reload-page";break;case"f12":r="open-devtools";break}if(l&&e.metaKey&&e.altKey&&!t)switch(n){case"i":case"c":case"j":r="open-devtools";break}r&&(e.preventDefault(),a.sendToHost("keyboard-shortcut",{shortcut:r})),a.sendToHost("did-keydown",{key:e.key,keyCode:e.keyCode,code:e.code,shiftKey:e.shiftKey,altKey:e.altKey,ctrlKey:e.ctrlKey,metaKey:e.metaKey,repeat:e.repeat})},!0)})();
+		`;try{s.executeJavaScript(e)}catch(t){console.error("[WebviewBrowser Preload] Failed to inject early dialog overrides:",t)}}c(),window.addEventListener("DOMContentLoaded",()=>{c(),document.addEventListener("click",e=>{if(!e.altKey)return;const t=e.target.closest("a[href]");if(!t)return;const o=t.href;!o||o.startsWith("javascript:")||(e.preventDefault(),e.stopPropagation(),a.sendToHost("open-url-side-group",{url:o}))},!0)}),document.addEventListener("keydown",e=>{if(!e.isTrusted)return;const t=l?e.metaKey:e.ctrlKey,o=e.shiftKey,i=e.altKey,n=e.key.toLowerCase();let r;if(t&&!o&&!i)switch(n){case"r":r="reload-page";break;case"l":r="focus-url-bar";break;case"t":r="new-browser-tab";break;case"i":r="focus-composer";break;case"f":r="find-in-page";break;case"b":r="toggle-sidebar";break;case"w":r="close-browser-tab";break;case"=":case"+":r="zoom-in";break;case"-":r="zoom-out";break;case"0":r="zoom-reset";break;case"z":r="undo";break;case"a":r="select-all";break;case"c":r="copy";break;case"v":r="paste";break;case"x":r="cut";break;case"[":r="navigate-back";break;case"]":r="navigate-forward";break;case"d":r="toggle-bookmark";break}if(t&&o&&!i)switch(n){case"i":r="open-devtools";break;case"z":r="redo";break}if(i&&!t&&!o)switch(n){case"arrowleft":r="navigate-back";break;case"arrowright":r="navigate-forward";break}if(!t&&!o&&!i)switch(n){case"f5":r="reload-page";break;case"f12":r="open-devtools";break}if(l&&e.metaKey&&e.altKey&&!o)switch(n){case"i":case"c":case"j":r="open-devtools";break}r&&(e.preventDefault(),a.sendToHost("keyboard-shortcut",{shortcut:r})),a.sendToHost("did-keydown",{key:e.key,keyCode:e.keyCode,code:e.code,shiftKey:e.shiftKey,altKey:e.altKey,ctrlKey:e.ctrlKey,metaKey:e.metaKey,repeat:e.repeat,browserShortcut:r})},!0)})();
 
-//# sourceMappingURL=http://go/sourcemap/sourcemaps/047548b00c1a079373d74d00183f32510a4a41e0/core/vs/workbench/contrib/composer/browser/preload-webview-browser.js.map
+//# sourceMappingURL=http://go/sourcemap/sourcemaps/90de2327392570a5f5f625c656c6749d228e6430/core/vs/workbench/contrib/composer/browser/preload-webview-browser.js.map
 
-//# debugId=8ec6ee88-d6c6-58ba-b44a-d2ba6f962431
+//# debugId=86e068cf-20bc-56bd-ba8b-2387813866e4

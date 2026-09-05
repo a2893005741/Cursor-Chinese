@@ -82,9 +82,6 @@
 			"ms-vscode-remote.remote-ssh": "anysphere.remote-ssh"
 		}
 	},
-	"skipPackagingLocalExtensions": [
-		"cursor-context-ast-typescript"
-	],
 	"cannotImportExtensions": [
 		"github.copilot-chat",
 		"github.copilot",
@@ -172,6 +169,7 @@
 		"https://api.dashboard.plaid.com",
 		"https://mcp.squareup.com",
 		"https://app.datadoghq.com/",
+		"http://go",
 		"https://mcp.figma.com",
 		"https://mcp.context7.com",
 		"https://mcp.prisma.io",
@@ -201,9 +199,6 @@
 		],
 		"VisualStudioExptTeam.vscodeintellicode-completions": [
 			"inlineCompletionsAdditions"
-		],
-		"ms-toolsai.datawrangler": [
-			"debugFocus"
 		],
 		"ms-vsliveshare.vsliveshare": [
 			"contribMenuBarHome",
@@ -239,12 +234,10 @@
 			"terminalExecuteCommandEvent",
 			"notebookReplDocument",
 			"notebookVariableProvider",
-			"terminalShellEnv",
-			"terminalShellType"
+			"terminalShellEnv"
 		],
 		"ms-python.vscode-python-envs": [
-			"terminalShellEnv",
-			"terminalShellType"
+			"terminalShellEnv"
 		],
 		"ms-dotnettools.dotnet-interactive-vscode": [
 			"notebookMessaging"
@@ -427,9 +420,6 @@
 			"terminalDataWriteEvent",
 			"chatParticipantAdditions"
 		],
-		"vscjava.vscode-java-pack": [
-			"lmTools"
-		],
 		"ms-dotnettools.csdevkit": [
 			"inlineCompletionsAdditions"
 		],
@@ -447,10 +437,6 @@
 		"TeamsDevApp.ms-teams-vscode-extension": [
 			"chatParticipantAdditions",
 			"languageModelSystem"
-		],
-		"apidev.azure-api-center": [
-			"chatParticipant",
-			"languageModels"
 		],
 		"jeanp413.open-remote-ssh": [
 			"resolvers",
@@ -540,8 +526,8 @@
 		},
 		{
 			"name": "ms-vscode.vscode-js-profile-table",
-			"version": "1.0.9",
-			"sha256": "3b62ee4276a2bbea3fe230f94b1d5edd915b05966090ea56f882e1e0ab53e1a6",
+			"version": "1.0.11",
+			"sha256": "50d002706213bc90d695f05f56d42fffd825035945eaf1cb1ba175effb7ff408",
 			"repo": "https://github.com/microsoft/vscode-js-profile-visualizer",
 			"metadata": {
 				"id": "7e52b41b-71ad-457b-ab7e-0620f1fc4feb",
@@ -2220,7 +2206,7 @@
 		"Shopify.ruby-lsp",
 		"swiftlang.swift-vscode"
 	],
-	"version": "3.14.27",
+	"version": "3.19.7",
 	"removeTelemetryMachineId": true,
 	"enabledTelemetryLevels": {
 		"error": true,
@@ -2273,16 +2259,16 @@
 		"__GULPFILE_REMOVE_LINE_BEFORE_COMPILING____disable_user_intent_agents__",
 		"__GULPFILE_REMOVE_LINE_BEFORE_COMPILING____disable_local_mode__"
 	],
-	"commit": "047548b00c1a079373d74d00183f32510a4a41e0",
-	"realCommit": "047548b00c1a079373d74d00183f32510a4a41e1",
-	"date": "2026-08-04T03:29:11.183Z",
+	"commit": "90de2327392570a5f5f625c656c6749d228e6430",
+	"realCommit": "90de2327392570a5f5f625c656c6749d228e6437",
+	"date": "2026-09-02T23:03:07.739Z",
 	"checksums": {
-		"vs/base/parts/sandbox/electron-sandbox/preload.js": "eV5t21qmKnY26vZ8n641hb6/jVRqGTwkqwTHix/3pK0",
-		"vs/workbench/workbench.desktop.main.js": "nkoSuHll46fg6nvYSXXBpO0v+yzOJ4HUeS7hwT++NxA",
-		"vs/workbench/workbench.desktop.main.css": "/uDMYs/O3+3OY6GJWQZHKX7uiFSJHgWjUAej2fX1JxQ",
-		"vs/workbench/api/node/extensionHostProcess.js": "5Nmf/3B+BFYvbgnpF3uxsMx55324vL03qGhOm6vVDaM",
-		"vs/code/electron-sandbox/workbench/workbench.html": "XVUBOZ93Nje8p8FiqbSdN9idRnNMv1+O0Pq9lJoEF0Y",
-		"vs/code/electron-sandbox/workbench/workbench.js": "QzU0X3530Osu0IzMlP9ED80OgieGlslMq9TTxL5HC7w"
+		"vs/base/parts/sandbox/electron-sandbox/preload.js": "HTtxwx9f4/p0zDdQPYVQ4HHg2odaGv4gYIGNmknzOAU",
+		"vs/workbench/workbench.desktop.main.js": "hlxzKn1n/mA92rl1W+uboFyTfxYbARgoiybY+TdtJXs",
+		"vs/workbench/workbench.desktop.main.css": "DEY1fQjA1xvzFNlDBV+Zf08usKW2Qc/Gek/SU7IbPec",
+		"vs/workbench/api/node/extensionHostProcess.js": "vRYrjkoathb8eb8Kbryy/WI2Ixqmm6fpJv8OzgI4LHg",
+		"vs/code/electron-sandbox/workbench/workbench.html": "BZ8Zb4TGBbDPaaGjA+MuDJxaFsxjmmG0YMyttD4zgcU",
+		"vs/code/electron-sandbox/workbench/workbench.js": "ltkWkR4shCAH1RD324JXnsrm3F160LcP043aqwWmrww"
 	},
 	"target": "user"
 }
